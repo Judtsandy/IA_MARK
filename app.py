@@ -6,36 +6,15 @@ import plotly.graph_objects as go
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
-import json
+from json import dumps
 from io import StringIO
-import subprocess
-import time
-import threading
+import os
 
 app = Flask(__name__)
 
-# Configuración (puedes mover esto a un archivo Config.py si prefieres)
-class Config:
-    NGROK_DOMAIN = 'poorly-free-insect.ngrok-free.app'
-    FLASK_PORT = 5000
-
-# Función para iniciar ngrok en un hilo separado
-def start_ngrok(domain, port):
-    def run():
-        time.sleep(2)
-        process = subprocess.Popen(
-            ['ngrok', 'http', '--domain='+domain, str(port)],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        time.sleep(2)
-        print(f"\n* NGROK URL FIJADA: https://{domain} -> http://localhost:{port} *\n")
-        return process
-    
-    ngrok_thread = threading.Thread(target=run)
-    ngrok_thread.daemon = True
-    ngrok_thread.start()
-    return ngrok_thread
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 # Cargar y procesar datos
 def load_data():
@@ -331,8 +310,8 @@ def task9():
     })
 
 if __name__ == '__main__':
-    # Iniciar ngrok en un hilo separado
-    start_ngrok(Config.NGROK_DOMAIN, Config.FLASK_PORT)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
     
     # Iniciar la aplicación Flask
     app.run(port=Config.FLASK_PORT, debug=True)

@@ -12,10 +12,6 @@ import os
 
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
-
 # Cargar y procesar datos
 def load_data():
     df = pd.read_csv('data/sales_data_sample.csv', encoding='unicode_escape')
@@ -312,6 +308,3 @@ def task9():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=False)
-    
-    # Iniciar la aplicación Flask
-    app.run(port=Config.FLASK_PORT, debug=True)
